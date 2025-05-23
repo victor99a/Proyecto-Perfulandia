@@ -1,0 +1,1 @@
+// UsuarioRepository.java - clase vacía para implementar

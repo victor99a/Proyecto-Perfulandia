@@ -1,0 +1,1 @@
+// VentaController.java - clase vacía para implementar

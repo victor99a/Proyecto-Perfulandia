@@ -1,0 +1,1 @@
+// InventarioController.java - clase vacía para implementar

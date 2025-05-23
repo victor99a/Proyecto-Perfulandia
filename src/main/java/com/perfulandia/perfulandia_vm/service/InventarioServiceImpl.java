@@ -1,0 +1,1 @@
+// InventarioServiceImpl.java - clase vacía para implementar

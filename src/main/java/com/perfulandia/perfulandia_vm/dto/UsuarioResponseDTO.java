@@ -1,0 +1,1 @@
+// UsuarioResponseDTO.java - clase vacía para implementar

@@ -1,0 +1,1 @@
+// VentaService.java - clase vacía para implementar

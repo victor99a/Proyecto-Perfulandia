@@ -1,0 +1,1 @@
+// InventarioRepository.java - clase vacía para implementar
