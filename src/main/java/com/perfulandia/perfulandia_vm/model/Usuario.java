@@ -34,4 +34,3 @@ public class Usuario {
     //private List<Venta> ventas;
 
 }
-
