@@ -1,29 +1,36 @@
+package com.perfulandia.perfulandia_vm.service;
+
+import com.perfulandia.perfulandia_vm.model.Usuario;
+import com.perfulandia.perfulandia_vm.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UsuarioService {
+import java.util.List;
 
-    private  UsuarioRepository usuarioRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+@Service
+public class UsuarioService implements IUsuarioService {
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
+    private UsuarioRepository usuarioRepository;
+
+    @Override
+    public List<Usuario> listarUsuarios() {
+        return usuarioRepository.findAll();
     }
 
-    public Usuario registrarUsuario(Usuario usuario) {
-        // Encriptar la contraseña
-        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+    @Override
+    public Usuario buscarUsuarioPorId(Integer idUsuario) {
+        return usuarioRepository.findById(idUsuario).orElse(null);
+    }
 
-        // Asignar rol predeterminado si no se ha asignado
-        if (usuario.getRol() == null) {
-            usuario.setRol(Usuario.Rol.usuario); // Rol predeterminado
-        }
+    @Override
+    public void guardarUsuario(Usuario usuario) {
+        usuarioRepository.save(usuario);
+    }
 
-        // Guardar el usuario en la base de datos
-        return usuarioRepository.save(usuario);
+    @Override
+    public void eliminarUsuario(Usuario usuario) {
+        usuarioRepository.delete(usuario);
     }
 }
+
