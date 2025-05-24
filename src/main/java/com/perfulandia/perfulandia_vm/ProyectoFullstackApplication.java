@@ -1,4 +1,4 @@
-package com.perfulandia.perfulandia_vm.service;
+package com.perfulandia.perfulandia_vm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
