@@ -1,5 +1,6 @@
 package com.perfulandia.perfulandia_vm.model;
 
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
