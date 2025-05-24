@@ -28,11 +28,13 @@ public class InventarioServiceImpl implements InventarioService{
 
     @Override
     public void eliminar(Long id) {
-        if (inventarioRepository.existsById(id)) {
-            inventarioRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("No se puede eliminar: ID no encontrado.");
+        if (!inventarioRepository.existsById(id)) {
+            System.out.println("Producto no encontrado con ID: " + id);
+            return; // o simplemente salta la eliminación
         }
+
+        inventarioRepository.deleteById(id);
     }
+
 
 }
