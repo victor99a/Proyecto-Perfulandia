@@ -30,7 +30,7 @@ public class InventarioServiceImpl implements InventarioService{
     public void eliminar(Long id) {
         if (!inventarioRepository.existsById(id)) {
             System.out.println("Producto no encontrado con ID: " + id);
-            return; // o simplemente salta la eliminación
+            return;
         }
 
         inventarioRepository.deleteById(id);
