@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.net.ssl.SSLSession;
+
 @Entity
 @Table(name = "detalle_ventas")
 @Data
@@ -32,7 +34,7 @@ public class DetalleVenta {
 
     @ManyToOne
     @JoinColumn(name = "id_producto", referencedColumnName = "id")
-    private Perfume perfume; // Relación con Perfume
+    private Inventario inventario; // Relación con Perfume
 
 
 }

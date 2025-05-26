@@ -1,6 +1,6 @@
 package com.perfulandia.perfulandia_vm.repository;
 
-import com.perfulandia.perfulandia_vm.repository.DetalleVentaRepository;
+import com.perfulandia.perfulandia_vm.model.DetalleVenta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

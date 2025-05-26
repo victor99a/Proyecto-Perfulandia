@@ -1,12 +1,12 @@
 /**
  * @Autor Valentina Gomez
  */
+package com.perfulandia.perfulandia_vm.controller;
 
-package com.ymy.cl.perfulandiafs.ventas.controller;
 
-import com.ymy.cl.perfulandiafs.ventas.dto.DetalleVentaDTO;
-import com.ymy.cl.perfulandiafs.ventas.model.Venta;
-import com.ymy.cl.perfulandiafs.ventas.service.VentaService;
+import com.perfulandia.perfulandia_vm.dto.DetalleVentaDTO;
+import com.perfulandia.perfulandia_vm.model.Venta;
+import com.perfulandia.perfulandia_vm.service.VentaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
