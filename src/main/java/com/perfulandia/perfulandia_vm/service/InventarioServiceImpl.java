@@ -5,7 +5,10 @@ import com.perfulandia.perfulandia_vm.repository.InventarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -30,11 +33,30 @@ public class InventarioServiceImpl implements InventarioService{
     public void eliminar(Long id) {
         if (!inventarioRepository.existsById(id)) {
             System.out.println("Producto no encontrado con ID: " + id);
-            return; // o simplemente salta la eliminación
+            return;
         }
 
         inventarioRepository.deleteById(id);
     }
+    @Override
+    public void descontarStock(Long id, int cantidad) {
+        Inventario inventario = inventarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+
+        int nuevoStock = inventario.getStock() - cantidad;
+        if (nuevoStock < 0) {
+            throw new RuntimeException("Stock insuficiente para el producto con ID: " + id);
+        }
+
+        inventario.setStock(nuevoStock);
+        inventarioRepository.save(inventario);
+    }
+    @Override
+    public Optional<Inventario> obtenerPorId(Long id) {
+        return inventarioRepository.findById(id);
+    }
+
+
 
 
 }
