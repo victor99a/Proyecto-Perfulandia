@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.Optional;
+
 
 
 @Service
@@ -51,11 +51,6 @@ public class InventarioServiceImpl implements InventarioService{
         inventario.setStock(nuevoStock);
         inventarioRepository.save(inventario);
     }
-    @Override
-    public Optional<Inventario> obtenerPorId(Long id) {
-        return inventarioRepository.findById(id);
-    }
-
 
 
 
