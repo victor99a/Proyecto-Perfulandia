@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.net.ssl.SSLSession;
 
 @Entity
@@ -21,10 +20,10 @@ public class DetalleVenta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false) // Hacemos que cantidad sea obligatorio
+    @Column(nullable = false)
     private Integer cantidad;
 
-    @Column(nullable = false) // Hacemos que precioUnitario sea obligatorio con precisión
+    @Column(nullable = false)
     private double precioUnitario;
 
     @JsonBackReference
@@ -34,7 +33,7 @@ public class DetalleVenta {
 
     @ManyToOne
     @JoinColumn(name = "id_producto", referencedColumnName = "id")
-    private Inventario inventario; // Relación con Perfume
+    private Inventario inventario;
 
 
 }

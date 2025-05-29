@@ -9,7 +9,6 @@ public class DetalleVentaDTO {
     private Integer cantidad;
     private double precioUnitario;
 
-    // Constructor que mapea la entidad DetalleVenta a DetalleVentaDTO
     public DetalleVentaDTO(DetalleVenta detalleVenta) {
         this.id = detalleVenta.getId();
         this.cantidad = detalleVenta.getCantidad();

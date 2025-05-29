@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface DetalleVentaRepository extends JpaRepository<DetalleVenta, Long> {
-    // Obtener detalles de venta por id de venta
+
     List<DetalleVenta> findByVentaId(Long ventaId);
 }

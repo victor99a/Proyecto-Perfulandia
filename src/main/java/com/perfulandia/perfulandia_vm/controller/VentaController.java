@@ -25,9 +25,9 @@ public class VentaController {
     public ResponseEntity<String> crearVenta(@RequestBody Venta venta) {
         try {
             String mensaje = ventaService.crearVenta(venta);
-            return ResponseEntity.status(HttpStatus.CREATED).body(mensaje);  // 201 Created
+            return ResponseEntity.status(HttpStatus.CREATED).body(mensaje);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la venta: " + e.getMessage());  // 500 Internal Server Error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la venta: " + e.getMessage());
         }
     }
 
@@ -35,22 +35,22 @@ public class VentaController {
     public ResponseEntity<List<Venta>> obtenerVentas() {
         List<Venta> ventas = ventaService.obtenerVentas();
         if (ventas.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ventas);  // 204 No Content
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ventas);
         }
-        return ResponseEntity.ok(ventas);  // 200 OK
+        return ResponseEntity.ok(ventas);
     }
 
     @GetMapping("/{id}/detalles")
     public ResponseEntity<List<DetalleVentaDTO>> obtenerDetallesDeVenta(@PathVariable Long id) {
         try {
-            // Llamamos al servicio para obtener los detalles de la venta como DTOs
+
             List<DetalleVentaDTO> detallesDTO = ventaService.obtenerDetallesDeVentaID(id);
             if (detallesDTO.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(detallesDTO);  // 204 No Content si no hay detalles
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(detallesDTO);
             }
-            return ResponseEntity.ok(detallesDTO);  // 200 OK
+            return ResponseEntity.ok(detallesDTO);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);  // 404 Not Found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
@@ -58,9 +58,9 @@ public class VentaController {
     public ResponseEntity<String> eliminarVenta(@PathVariable Long id) {
         try {
             String mensaje = ventaService.eliminarVenta(id);
-            return ResponseEntity.status(HttpStatus.OK).body(mensaje);  // 200 OK
+            return ResponseEntity.status(HttpStatus.OK).body(mensaje);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Venta no encontrada: " + e.getMessage());  // 404 Not Found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Venta no encontrada: " + e.getMessage());
         }
     }
 }

@@ -29,23 +29,18 @@ public class VentaService {
 
     public String crearVenta(Venta venta) {
         try {
-            // Guardamos la venta
             Venta nuevaVenta = ventaRepository.save(venta);
 
-            // Guardamos los detalles de la venta
             for (DetalleVenta detalle : venta.getDetalleVentas()) {
-                detalle.setVenta(nuevaVenta);  // Asociamos el detalle a la venta
+                detalle.setVenta(nuevaVenta);
 
-                // Guardamos el detalle
                 detalleVentaRepository.save(detalle);
 
-                // Actualizamos el stock
                 actualizarStock(detalle.getInventario().getId(), detalle.getCantidad());
             }
 
             return "Venta registrada con éxito";
         } catch (Exception e) {
-            // Registra el error y lanza una excepción controlada
             e.printStackTrace();
             throw new RuntimeException("Error al registrar la venta: " + e.getMessage());
         }
@@ -57,18 +52,14 @@ public class VentaService {
     }
 
     public List<DetalleVentaDTO> obtenerDetallesDeVentaID(Long ventaId) {
-        // Obtener los detalles de la venta desde el repositorio
         List<DetalleVenta> detalles = detalleVentaRepository.findByVentaId(ventaId);
 
-        // Imprimir detalles para verificar que la entidad está siendo recuperada correctamente
-        detalles.forEach(detalle -> System.out.println(detalle.getId())); // Agrega un log de depuración
+        detalles.forEach(detalle -> System.out.println(detalle.getId()));
 
-        // Convertir las entidades DetalleVenta a DTO
         return detalles.stream()
                 .map(DetalleVentaDTO::new)
-                .collect(Collectors.toList());  // Recoger los DTOs en una lista
+                .collect(Collectors.toList());
     }
-
 
     public String eliminarVenta(Long id) {
         if (!ventaRepository.existsById(id)) {
@@ -78,9 +69,8 @@ public class VentaService {
         return "Venta anulada con éxito";
     }
 
-    // Actualizar el stock de un perfume después de la venta
-    private void actualizarStock(Integer inventarioId, int cantidadVendida) {
-        Inventario inventario = inventarioRepository.findById(Id)
+    private void actualizarStock(Long inventarioId, int cantidadVendida) {
+        Inventario inventario = inventarioRepository.findById(inventarioId)
                 .orElseThrow(() -> new RuntimeException("Perfume no encontrado"));
         int nuevoStock = inventario.getStock() - cantidadVendida;
 
@@ -89,7 +79,7 @@ public class VentaService {
         }
 
         inventario.setStock(nuevoStock);
-        inventarioRepository.save(inventario);  // Guardamos el perfume actualizado
+        inventarioRepository.save(inventario);
     }
 
 }

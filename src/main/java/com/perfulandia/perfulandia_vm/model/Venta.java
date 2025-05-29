@@ -43,16 +43,16 @@ public class Venta {
     @Column(name = "fecha_venta", nullable = false)
     private Date fechaVenta;
 
-    @Column(nullable = false)  // Total obligatorio con precisión
+    @Column(nullable = false)
     private double total;
 
-    @Column(nullable = false, length = 20)  // Estado obligatorio
+    @Column(nullable = false, length = 20)
     private String estado;
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "run_usuario", referencedColumnName = "id") // Relación con Usuario
-    private Usuario usuario; // Un usuario realiza una venta
+    @JoinColumn(name = "run_usuario", referencedColumnName = "id")
+    private Usuario usuario;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

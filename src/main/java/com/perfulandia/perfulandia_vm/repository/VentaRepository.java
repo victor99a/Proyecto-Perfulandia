@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface VentaRepository extends JpaRepository<Venta, Long> {
-    // Buscar ventas por estado
+
     List<Venta> findByEstado(String estado);
 }
 
