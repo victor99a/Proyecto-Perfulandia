@@ -80,7 +80,7 @@ public class VentaService {
 
     // Actualizar el stock de un perfume después de la venta
     private void actualizarStock(Integer inventarioId, int cantidadVendida) {
-        Inventario inventario = inventarioRepository.findById(inventarioId)
+        Inventario inventario = inventarioRepository.findById(Id)
                 .orElseThrow(() -> new RuntimeException("Perfume no encontrado"));
         int nuevoStock = inventario.getStock() - cantidadVendida;
 
