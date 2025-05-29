@@ -38,19 +38,7 @@ public class InventarioServiceImpl implements InventarioService{
 
         inventarioRepository.deleteById(id);
     }
-    @Override
-    public void descontarStock(Long id, int cantidad) {
-        Inventario inventario = inventarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
 
-        int nuevoStock = inventario.getStock() - cantidad;
-        if (nuevoStock < 0) {
-            throw new RuntimeException("Stock insuficiente para el producto con ID: " + id);
-        }
-
-        inventario.setStock(nuevoStock);
-        inventarioRepository.save(inventario);
-    }
 
 
 

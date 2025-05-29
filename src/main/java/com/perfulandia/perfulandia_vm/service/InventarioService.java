@@ -11,7 +11,7 @@ public interface InventarioService {
     List<Inventario> obtenerTodo();
     Inventario guardar (Inventario inventario);
     void eliminar(Long id);
-    void descontarStock(Long id, int cantidad);
+
 
 
 
