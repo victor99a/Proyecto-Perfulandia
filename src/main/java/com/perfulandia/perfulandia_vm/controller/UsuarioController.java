@@ -23,7 +23,7 @@ public class UsuarioController {
     // 1) Registrar nuevo usuario (POST)
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@RequestBody UsuarioRequestDTO usuarioDTO) {
-        // Validación de existencia del usuario, etc.
+        //
         Usuario usuario = new Usuario();
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setApellido(usuarioDTO.getApellido());
@@ -81,27 +81,30 @@ public class UsuarioController {
 
     // 4) Actualizar usuario (PUT)
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioRequestDTO usuarioDTO) {
+    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioRequestDTO usuarioDTO) {
         Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(id);
-        if (usuarioExistente != null) {
-            usuarioExistente.setNombre(usuarioDTO.getNombre());
-            usuarioExistente.setApellido(usuarioDTO.getApellido());
-            usuarioExistente.setCorreo(usuarioDTO.getCorreo());
-            usuarioExistente.setTelefono(usuarioDTO.getTelefono());
-            usuarioExistente.setContrasena(usuarioDTO.getContrasena());
-            usuarioService.guardarUsuario(usuarioExistente);
 
-            UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
-            usuarioResponseDTO.setId(usuarioExistente.getId());
-            usuarioResponseDTO.setNombre(usuarioExistente.getNombre());
-            usuarioResponseDTO.setApellido(usuarioExistente.getApellido());
-            usuarioResponseDTO.setCorreo(usuarioExistente.getCorreo());
-            usuarioResponseDTO.setTelefono(usuarioExistente.getTelefono());
-            return ResponseEntity.ok(usuarioResponseDTO);
-        } else {
-            return ResponseEntity.notFound().build();
+        if (usuarioExistente == null) {
+            // Si no se encuentra el usuario, se retorna un 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+
+        // Actualización de los datos
+        usuarioExistente.setNombre(usuarioDTO.getNombre());
+        usuarioExistente.setApellido(usuarioDTO.getApellido());
+        usuarioExistente.setCorreo(usuarioDTO.getCorreo());
+        usuarioExistente.setTelefono(usuarioDTO.getTelefono());
+        usuarioExistente.setContrasena(usuarioDTO.getContrasena());
+
+        // Guardar el usuario actualizado
+        usuarioService.guardarUsuario(usuarioExistente);
+
+        // Retornar el usuario actualizado
+        return ResponseEntity.ok(usuarioExistente);
     }
+
+
+
 
     // 5) Eliminar usuario (DELETE)
     @DeleteMapping("/{id}")
