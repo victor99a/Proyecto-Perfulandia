@@ -3,6 +3,9 @@ package com.perfulandia.perfulandia_vm.controller;
 import com.perfulandia.perfulandia_vm.model.Inventario;
 import com.perfulandia.perfulandia_vm.service.InventarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +32,16 @@ public class InventarioController {
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarInventario(@PathVariable Long id){
-        inventarioService.eliminar(id);
+    public ResponseEntity<String>
+    eliminar(@PathVariable("id")Long id){
+        try{
+            inventarioService.eliminar(id);
+        return
+         ResponseEntity.status(HttpStatus.OK).body("Producto eliminado con exito");
+        } catch (RuntimeException e){
+            return
+          ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado:"+ e.getMessage());
+        }
     }
 
 }
