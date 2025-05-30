@@ -1,18 +1,12 @@
 package com.perfulandia.perfulandia_vm.service;
 
-import com.perfulandia.perfulandia_vm.dto.DetalleVentaDTO;
 import com.perfulandia.perfulandia_vm.model.Venta;
-import com.perfulandia.perfulandia_vm.model.DetalleVenta;
-import com.perfulandia.perfulandia_vm.repository.InventarioRepository;
 import com.perfulandia.perfulandia_vm.repository.VentaRepository;
-import com.perfulandia.perfulandia_vm.repository.DetalleVentaRepository;
-import com.perfulandia.perfulandia_vm.model.Inventario;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -21,24 +15,9 @@ public class VentaService {
     @Autowired
     private VentaRepository ventaRepository;
 
-    @Autowired
-    private DetalleVentaRepository detalleVentaRepository;
-
-    @Autowired
-    private InventarioRepository inventarioRepository;
-
     public String crearVenta(Venta venta) {
         try {
-            Venta nuevaVenta = ventaRepository.save(venta);
-
-            for (DetalleVenta detalle : venta.getDetalleVentas()) {
-                detalle.setVenta(nuevaVenta);
-
-                detalleVentaRepository.save(detalle);
-
-                actualizarStock(detalle.getInventario().getId(), detalle.getCantidad());
-            }
-
+            ventaRepository.save(venta);
             return "Venta registrada con éxito";
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,19 +25,8 @@ public class VentaService {
         }
     }
 
-
     public List<Venta> obtenerVentas() {
         return ventaRepository.findAll();
-    }
-
-    public List<DetalleVentaDTO> obtenerDetallesDeVentaID(Long ventaId) {
-        List<DetalleVenta> detalles = detalleVentaRepository.findByVentaId(ventaId);
-
-        detalles.forEach(detalle -> System.out.println(detalle.getId()));
-
-        return detalles.stream()
-                .map(DetalleVentaDTO::new)
-                .collect(Collectors.toList());
     }
 
     public String eliminarVenta(Long id) {
@@ -69,19 +37,22 @@ public class VentaService {
         return "Venta anulada con éxito";
     }
 
-    private void actualizarStock(Long inventarioId, int cantidadVendida) {
-        Inventario inventario = inventarioRepository.findById(inventarioId)
-                .orElseThrow(() -> new RuntimeException("Perfume no encontrado"));
-        int nuevoStock = inventario.getStock() - cantidadVendida;
+    public Venta obtenerVentaPorId(Long id) {
+        return ventaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+    }
 
-        if (nuevoStock < 0) {
-            throw new RuntimeException("No hay suficiente stock para el perfume: " + inventario.getNombre());
-        }
+    public List<Venta> obtenerVentasPorEstado(String estado) {
+        return ventaRepository.findByEstado(estado);
+    }
 
-        inventario.setStock(nuevoStock);
-        inventarioRepository.save(inventario);
+    public String actualizarEstado(Long id, String nuevoEstado) {
+        Venta venta = ventaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+
+        venta.setEstado(nuevoEstado);
+        ventaRepository.save(venta);
+        return "Estado de la venta actualizado con éxito";
     }
 
 }
-
-

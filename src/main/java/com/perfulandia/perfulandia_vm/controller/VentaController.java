@@ -3,8 +3,6 @@
  */
 package com.perfulandia.perfulandia_vm.controller;
 
-
-import com.perfulandia.perfulandia_vm.dto.DetalleVentaDTO;
 import com.perfulandia.perfulandia_vm.model.Venta;
 import com.perfulandia.perfulandia_vm.service.VentaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/ventas")
@@ -40,22 +39,27 @@ public class VentaController {
         return ResponseEntity.ok(ventas);
     }
 
-    @GetMapping("/{id}/detalles")
-    public ResponseEntity<List<DetalleVentaDTO>> obtenerDetallesDeVenta(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Venta> obtenerVentaPorId(@PathVariable Long id) {
         try {
-
-            List<DetalleVentaDTO> detallesDTO = ventaService.obtenerDetallesDeVentaID(id);
-            if (detallesDTO.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(detallesDTO);
-            }
-            return ResponseEntity.ok(detallesDTO);
+            Venta venta = ventaService.obtenerVentaPorId(id);
+            return ResponseEntity.ok(venta);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<List<Venta>> obtenerVentasPorEstado(@PathVariable String estado) {
+        List<Venta> ventas = ventaService.obtenerVentasPorEstado(estado);
+        if (ventas.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ventas);
+        }
+        return ResponseEntity.ok(ventas);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarVenta(@PathVariable Long id) {
+    public ResponseEntity<String> eliminarVenta(@PathVariable("id") Long id) {
         try {
             String mensaje = ventaService.eliminarVenta(id);
             return ResponseEntity.status(HttpStatus.OK).body(mensaje);
@@ -63,6 +67,19 @@ public class VentaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Venta no encontrada: " + e.getMessage());
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> actualizarEstado(@PathVariable("id") Long id, @RequestBody Map<String, String> body) {
+        try {
+            String nuevoEstado = body.get("estado");
+            String mensaje = ventaService.actualizarEstado(id, nuevoEstado);
+            return ResponseEntity.ok(mensaje);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
+        }
+    }
+
+
 }
 
 
