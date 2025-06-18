@@ -22,8 +22,8 @@ public class UsuarioController {
 
     // 1) Registrar nuevo usuario (POST)
     @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@RequestBody UsuarioRequestDTO usuarioDTO) {
-        // Validación de existencia del usuario, etc.
+    public ResponseEntity<String> registrarUsuario(@RequestBody UsuarioRequestDTO usuarioDTO) {
+        // Crear un nuevo usuario
         Usuario usuario = new Usuario();
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setApellido(usuarioDTO.getApellido());
@@ -31,8 +31,10 @@ public class UsuarioController {
         usuario.setTelefono(usuarioDTO.getTelefono());
         usuario.setContrasena(usuarioDTO.getContrasena());
 
+        // Guardar el nuevo usuario
         usuarioService.guardarUsuario(usuario);
 
+        // Crear el DTO para la respuesta
         UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
         usuarioResponseDTO.setId(usuario.getId());
         usuarioResponseDTO.setNombre(usuario.getNombre());
@@ -40,8 +42,11 @@ public class UsuarioController {
         usuarioResponseDTO.setCorreo(usuario.getCorreo());
         usuarioResponseDTO.setTelefono(usuario.getTelefono());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioResponseDTO);
+        // Devolver respuesta con el mensaje "Usuario creado con éxito" y el usuario creado
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Usuario creado con éxito: " + usuarioResponseDTO);
     }
+
 
     // 2) Listar usuarios (GET)
     @GetMapping
@@ -64,54 +69,70 @@ public class UsuarioController {
 
     // 3) Obtener un usuario por ID (GET)
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> obtenerUsuarioPorId(@PathVariable Integer id) {
+    public ResponseEntity<String> obtenerUsuarioPorId(@PathVariable Integer id) {
         Usuario usuario = usuarioService.buscarUsuarioPorId(id);
+
         if (usuario != null) {
+            // Crear el DTO para la respuesta
             UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
             usuarioResponseDTO.setId(usuario.getId());
             usuarioResponseDTO.setNombre(usuario.getNombre());
             usuarioResponseDTO.setApellido(usuario.getApellido());
             usuarioResponseDTO.setCorreo(usuario.getCorreo());
             usuarioResponseDTO.setTelefono(usuario.getTelefono());
-            return ResponseEntity.ok(usuarioResponseDTO);
+
+            // Retornar usuario encontrado con la respuesta del DTO
+            return ResponseEntity.ok("Usuario con ID " + id + " encontrado: " + usuarioResponseDTO);
         } else {
-            return ResponseEntity.notFound().build();
+            // Si el usuario no es encontrado, devolver un mensaje personalizado
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuario con ID " + id + " no encontrado.");
         }
     }
+
 
     // 4) Actualizar usuario (PUT)
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioRequestDTO usuarioDTO) {
+    public ResponseEntity<String> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioRequestDTO usuarioDTO) {
         Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(id);
-        if (usuarioExistente != null) {
-            usuarioExistente.setNombre(usuarioDTO.getNombre());
-            usuarioExistente.setApellido(usuarioDTO.getApellido());
-            usuarioExistente.setCorreo(usuarioDTO.getCorreo());
-            usuarioExistente.setTelefono(usuarioDTO.getTelefono());
-            usuarioExistente.setContrasena(usuarioDTO.getContrasena());
-            usuarioService.guardarUsuario(usuarioExistente);
 
-            UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
-            usuarioResponseDTO.setId(usuarioExistente.getId());
-            usuarioResponseDTO.setNombre(usuarioExistente.getNombre());
-            usuarioResponseDTO.setApellido(usuarioExistente.getApellido());
-            usuarioResponseDTO.setCorreo(usuarioExistente.getCorreo());
-            usuarioResponseDTO.setTelefono(usuarioExistente.getTelefono());
-            return ResponseEntity.ok(usuarioResponseDTO);
-        } else {
-            return ResponseEntity.notFound().build();
+        if (usuarioExistente == null) {
+            // Si no se encuentra el usuario, se retorna un 404 con un mensaje
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuario con ID " + id + " no encontrado.");
         }
+
+        // Actualización de los datos
+        usuarioExistente.setNombre(usuarioDTO.getNombre());
+        usuarioExistente.setApellido(usuarioDTO.getApellido());
+        usuarioExistente.setCorreo(usuarioDTO.getCorreo());
+        usuarioExistente.setTelefono(usuarioDTO.getTelefono());
+        usuarioExistente.setContrasena(usuarioDTO.getContrasena());
+
+        // Guardar el usuario actualizado
+        usuarioService.guardarUsuario(usuarioExistente);
+
+        // Mensaje de éxito con el usuario actualizado
+        return ResponseEntity.ok("Usuario con ID " + id + " actualizado con éxito.");
     }
 
-    // 5) Eliminar usuario (DELETE)
+
+
+
+    //eliminar usuario
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) {
+    public ResponseEntity<String> eliminarUsuario(@PathVariable Integer id) {
         Usuario usuario = usuarioService.buscarUsuarioPorId(id);
         if (usuario != null) {
+            // Eliminar el usuario
             usuarioService.eliminarUsuario(usuario);
-            return ResponseEntity.noContent().build();
+
+            // Mensaje de éxito
+            return ResponseEntity.ok("Usuario con ID " + id + " fue eliminado exitosamente.");
         } else {
-            return ResponseEntity.notFound().build();
+            // Si no se encuentra el usuario
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuario con ID " + id + " no encontrado.");
         }
     }
 }

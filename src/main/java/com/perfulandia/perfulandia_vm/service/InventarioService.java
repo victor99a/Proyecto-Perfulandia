@@ -10,7 +10,9 @@ import java.util.List;
 public interface InventarioService {
     List<Inventario> obtenerTodo();
     Inventario guardar (Inventario inventario);
-    void eliminar(Long id);
+    String eliminar(Long id);
+    Inventario actualizar(Long id, Inventario inventario);
+
 
 
 
