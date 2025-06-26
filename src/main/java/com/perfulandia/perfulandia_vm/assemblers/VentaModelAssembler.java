@@ -20,5 +20,7 @@ public class VentaModelAssembler implements RepresentationModelAssembler<Venta, 
                 linkTo(methodOn(VentaControllerV2.class).actualizarEstado(venta.getId(), "nuevoEstado")).withRel("actualizar-estado")
         );
     }
+
+
 }
 
