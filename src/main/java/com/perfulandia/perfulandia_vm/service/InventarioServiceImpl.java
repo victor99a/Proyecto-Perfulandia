@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 
-
 @Service
 public class InventarioServiceImpl implements InventarioService{
 
@@ -49,6 +48,12 @@ public class InventarioServiceImpl implements InventarioService{
 
         return inventarioRepository.save(existente);
     }
+    @Override
+    public Inventario buscarPorId(Long id) {
+        return inventarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+    }
+
 
 
 
