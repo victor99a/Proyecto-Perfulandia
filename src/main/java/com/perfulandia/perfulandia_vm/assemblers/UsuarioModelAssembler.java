@@ -1,6 +1,7 @@
 package com.perfulandia.perfulandia_vm.assemblers;
 
 import com.perfulandia.perfulandia_vm.controller.UsuarioControllerV2;
+import com.perfulandia.perfulandia_vm.dto.UsuarioRequestDTO;
 import com.perfulandia.perfulandia_vm.dto.UsuarioResponseDTO;
 import com.perfulandia.perfulandia_vm.model.Usuario;
 import org.springframework.hateoas.EntityModel;
@@ -21,12 +22,16 @@ public class UsuarioModelAssembler implements RepresentationModelAssembler<Usuar
         dto.setCorreo(usuario.getCorreo());
         dto.setTelefono(usuario.getTelefono());
 
+        // Creamos un DTO vacío para evitar error al construir el link
+        UsuarioRequestDTO dummyDto = new UsuarioRequestDTO();
+
         return EntityModel.of(dto,
                 linkTo(methodOn(UsuarioControllerV2.class).obtenerUsuarioPorId(usuario.getId())).withSelfRel(),
                 linkTo(methodOn(UsuarioControllerV2.class).listarUsuarios()).withRel("usuarios"),
                 linkTo(methodOn(UsuarioControllerV2.class).eliminarUsuario(usuario.getId())).withRel("eliminar"),
-                linkTo(methodOn(UsuarioControllerV2.class).actualizarUsuario(usuario.getId(), null)).withRel("actualizar")
+                linkTo(methodOn(UsuarioControllerV2.class).actualizarUsuario(usuario.getId(), dummyDto)).withRel("actualizar")
         );
     }
 }
+
 

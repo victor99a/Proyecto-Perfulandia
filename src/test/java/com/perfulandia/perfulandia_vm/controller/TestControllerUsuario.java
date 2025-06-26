@@ -104,75 +104,63 @@ public class TestControllerUsuario {
 
     @Test
     void testObtenerUsuarioPorId() {
-        // Simulamos que el servicio devuelve un usuario con un ID válido
         when(usuarioService.buscarUsuarioPorId(1)).thenReturn(usuario);
 
-        // Llamar al método del controlador
-        ResponseEntity<String> response = usuarioController.obtenerUsuarioPorId(1);
+        ResponseEntity<?> response = usuarioController.obtenerUsuarioPorId(1);
 
-        // Verificar que el código de estado sea 200 OK
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("Usuario con ID 1 encontrado"));
+        assertTrue(response.getBody() instanceof UsuarioResponseDTO);
 
-        // Simulamos que el servicio no devuelve un usuario con un ID inválido
+        UsuarioResponseDTO dto = (UsuarioResponseDTO) response.getBody();
+        assertEquals("Juan", dto.getNombre());
+
+        // Simulamos usuario no existente
         when(usuarioService.buscarUsuarioPorId(99)).thenReturn(null);
 
-        // Llamar al método del controlador con un ID no existente
         response = usuarioController.obtenerUsuarioPorId(99);
-
-        // Verificar que el código de estado sea 404 Not Found
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertTrue(response.getBody().contains("Usuario con ID 99 no encontrado"));
+        assertEquals("Usuario no encontrado.", response.getBody());
     }
+
     @Test
     void testActualizarUsuario() {
-        // Datos de prueba para el DTO de actualización
-        UsuarioRequestDTO usuarioRequestDTO = new UsuarioRequestDTO();
-        usuarioRequestDTO.setNombre("Juanito");
-        usuarioRequestDTO.setApellido("Pérez");
-        usuarioRequestDTO.setCorreo("juanito.perez@example.com");
-        usuarioRequestDTO.setTelefono(987654321);
-        usuarioRequestDTO.setContrasena("newpassword");
+        UsuarioRequestDTO updateDTO = new UsuarioRequestDTO();
+        updateDTO.setNombre("Juanito");
+        updateDTO.setApellido("Pérez");
+        updateDTO.setCorreo("juanito.perez@example.com");
+        updateDTO.setTelefono(987654321);
+        updateDTO.setContrasena("newpassword");
 
-        // Simulamos que el servicio busca un usuario existente
         when(usuarioService.buscarUsuarioPorId(1)).thenReturn(usuario);
 
-        // Llamar al método del controlador
-        ResponseEntity<String> response = usuarioController.actualizarUsuario(1, usuarioRequestDTO);
+        ResponseEntity<?> response = usuarioController.actualizarUsuario(1, updateDTO);
 
-        // Verificar que el código de estado sea 200 OK
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("Usuario con ID 1 actualizado con éxito"));
+        assertTrue(response.getBody() instanceof UsuarioResponseDTO);
 
-        // Verificar que el método guardarUsuario sea llamado
+        UsuarioResponseDTO dto = (UsuarioResponseDTO) response.getBody();
+        assertEquals("Juanito", dto.getNombre());
+
         verify(usuarioService, times(1)).guardarUsuario(any(Usuario.class));
     }
 
     @Test
     void testEliminarUsuario() {
-        // Simulamos que el servicio devuelve un usuario existente
         when(usuarioService.buscarUsuarioPorId(1)).thenReturn(usuario);
 
-        // Llamar al método del controlador
-        ResponseEntity<String> response = usuarioController.eliminarUsuario(1);
-
-        // Verificar que el código de estado sea 200 OK
+        ResponseEntity<?> response = usuarioController.eliminarUsuario(1);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("Usuario con ID 1 fue eliminado exitosamente"));
+        assertEquals("Usuario con ID 1 eliminado exitosamente.", response.getBody());
 
-        // Verificar que el método eliminarUsuario sea llamado
         verify(usuarioService, times(1)).eliminarUsuario(any(Usuario.class));
 
-        // Simulamos que el servicio no encuentra un usuario con el ID
         when(usuarioService.buscarUsuarioPorId(99)).thenReturn(null);
 
-        // Llamar al método del controlador con un ID no existente
         response = usuarioController.eliminarUsuario(99);
-
-        // Verificar que el código de estado sea 404 Not Found
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertTrue(response.getBody().contains("Usuario con ID 99 no encontrado"));
+        assertEquals("Usuario con ID 99 no encontrado.", response.getBody());
     }
+
 
 
 }

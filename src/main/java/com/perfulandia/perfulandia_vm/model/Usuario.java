@@ -29,8 +29,6 @@ public class Usuario {
     @Column(nullable = false)
     private String contrasena;
 
-    //@JsonManagedReference
-    //@OneToMany(mappedBy = "usuario")
-    //private List<Venta> ventas;
+
 
 }

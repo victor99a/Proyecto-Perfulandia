@@ -5,6 +5,7 @@ import com.perfulandia.perfulandia_vm.dto.UsuarioRequestDTO;
 import com.perfulandia.perfulandia_vm.dto.UsuarioResponseDTO;
 import com.perfulandia.perfulandia_vm.model.Usuario;
 import com.perfulandia.perfulandia_vm.service.IUsuarioService;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,71 +70,98 @@ public class UsuarioController {
 
     // 3) Obtener un usuario por ID (GET)
     @GetMapping("/{id}")
-    public ResponseEntity<String> obtenerUsuarioPorId(@PathVariable Integer id) {
-        Usuario usuario = usuarioService.buscarUsuarioPorId(id);
+    public ResponseEntity<?> obtenerUsuarioPorId(
+            @Parameter(description = "ID del usuario a buscar", example = "8", required = true)
+            @PathVariable("id") Integer id) {
+        try {
+            Usuario usuario = usuarioService.buscarUsuarioPorId(id);
 
-        if (usuario != null) {
-            // Crear el DTO para la respuesta
-            UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
-            usuarioResponseDTO.setId(usuario.getId());
-            usuarioResponseDTO.setNombre(usuario.getNombre());
-            usuarioResponseDTO.setApellido(usuario.getApellido());
-            usuarioResponseDTO.setCorreo(usuario.getCorreo());
-            usuarioResponseDTO.setTelefono(usuario.getTelefono());
+            if (usuario == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
+            }
 
-            // Retornar usuario encontrado con la respuesta del DTO
-            return ResponseEntity.ok("Usuario con ID " + id + " encontrado: " + usuarioResponseDTO);
-        } else {
-            // Si el usuario no es encontrado, devolver un mensaje personalizado
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Usuario con ID " + id + " no encontrado.");
+            UsuarioResponseDTO dto = new UsuarioResponseDTO();
+            dto.setId(usuario.getId());
+            dto.setNombre(usuario.getNombre());
+            dto.setApellido(usuario.getApellido());
+            dto.setCorreo(usuario.getCorreo());
+            dto.setTelefono(usuario.getTelefono());
+
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error interno: " + e.getMessage());
         }
     }
+
+
+
 
 
     // 4) Actualizar usuario (PUT)
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioRequestDTO usuarioDTO) {
-        Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(id);
+    public ResponseEntity<?> actualizarUsuario(
+            @Parameter(description = "ID del usuario a actualizar", example = "8", required = true)
+            @PathVariable("id") Integer id,
+            @RequestBody UsuarioRequestDTO usuarioDTO) {
+        try {
+            Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(id);
 
-        if (usuarioExistente == null) {
-            // Si no se encuentra el usuario, se retorna un 404 con un mensaje
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Usuario con ID " + id + " no encontrado.");
+            if (usuarioExistente == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
+            }
+
+            usuarioExistente.setNombre(usuarioDTO.getNombre());
+            usuarioExistente.setApellido(usuarioDTO.getApellido());
+            usuarioExistente.setCorreo(usuarioDTO.getCorreo());
+            usuarioExistente.setTelefono(usuarioDTO.getTelefono());
+            usuarioExistente.setContrasena(usuarioDTO.getContrasena());
+
+            usuarioService.guardarUsuario(usuarioExistente);
+
+            UsuarioResponseDTO responseDTO = new UsuarioResponseDTO();
+            responseDTO.setId(usuarioExistente.getId());
+            responseDTO.setNombre(usuarioExistente.getNombre());
+            responseDTO.setApellido(usuarioExistente.getApellido());
+            responseDTO.setCorreo(usuarioExistente.getCorreo());
+            responseDTO.setTelefono(usuarioExistente.getTelefono());
+
+            return ResponseEntity.ok(responseDTO);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error interno al actualizar el usuario: " + e.getMessage());
         }
-
-        // Actualización de los datos
-        usuarioExistente.setNombre(usuarioDTO.getNombre());
-        usuarioExistente.setApellido(usuarioDTO.getApellido());
-        usuarioExistente.setCorreo(usuarioDTO.getCorreo());
-        usuarioExistente.setTelefono(usuarioDTO.getTelefono());
-        usuarioExistente.setContrasena(usuarioDTO.getContrasena());
-
-        // Guardar el usuario actualizado
-        usuarioService.guardarUsuario(usuarioExistente);
-
-        // Mensaje de éxito con el usuario actualizado
-        return ResponseEntity.ok("Usuario con ID " + id + " actualizado con éxito.");
     }
+
+
 
 
 
 
     //eliminar usuario
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarUsuario(@PathVariable Integer id) {
-        Usuario usuario = usuarioService.buscarUsuarioPorId(id);
-        if (usuario != null) {
-            // Eliminar el usuario
+    public ResponseEntity<?> eliminarUsuario(
+            @Parameter(description = "ID del usuario a eliminar", example = "8", required = true)
+            @PathVariable("id") Integer id) {
+        try {
+            Usuario usuario = usuarioService.buscarUsuarioPorId(id);
+
+            if (usuario == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario con ID " + id + " no encontrado.");
+            }
+
             usuarioService.eliminarUsuario(usuario);
 
-            // Mensaje de éxito
-            return ResponseEntity.ok("Usuario con ID " + id + " fue eliminado exitosamente.");
-        } else {
-            // Si no se encuentra el usuario
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Usuario con ID " + id + " no encontrado.");
+            return ResponseEntity.ok("Usuario con ID " + id + " eliminado exitosamente.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error interno al eliminar el usuario: " + e.getMessage());
         }
     }
+
+
+
 }
 

@@ -4,6 +4,7 @@ import com.perfulandia.perfulandia_vm.assemblers.UsuarioModelAssembler;
 import com.perfulandia.perfulandia_vm.dto.UsuarioRequestDTO;
 import com.perfulandia.perfulandia_vm.model.Usuario;
 import com.perfulandia.perfulandia_vm.service.IUsuarioService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -26,7 +27,7 @@ public class UsuarioControllerV2 {
     @Autowired
     private UsuarioModelAssembler assembler;
 
-    // POST: Crear
+    // POST: Crear nuevo usuario
     @PostMapping
     public ResponseEntity<EntityModel<?>> registrarUsuario(@RequestBody UsuarioRequestDTO usuarioDTO) {
         Usuario usuario = new Usuario();
@@ -41,7 +42,7 @@ public class UsuarioControllerV2 {
         return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(usuario));
     }
 
-    // GET: Listar
+    // GET: Listar todos los usuarios
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<?>>> listarUsuarios() {
         List<Usuario> usuarios = usuarioService.listarUsuarios();
@@ -56,9 +57,9 @@ public class UsuarioControllerV2 {
         );
     }
 
-    // GET: Obtener por ID
+    // GET: Obtener usuario por ID
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<?>> obtenerUsuarioPorId(@PathVariable Integer id) {
+    public ResponseEntity<EntityModel<?>> obtenerUsuarioPorId(@PathVariable("id") Integer id) {
         Usuario usuario = usuarioService.buscarUsuarioPorId(id);
 
         if (usuario == null) {
@@ -68,9 +69,9 @@ public class UsuarioControllerV2 {
         return ResponseEntity.ok(assembler.toModel(usuario));
     }
 
-    // PUT: Actualizar
+    // PUT: Actualizar usuario
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody UsuarioRequestDTO usuarioDTO) {
+    public ResponseEntity<?> actualizarUsuario(@PathVariable("id") Integer id, @RequestBody UsuarioRequestDTO usuarioDTO) {
         Usuario usuarioExistente = usuarioService.buscarUsuarioPorId(id);
 
         if (usuarioExistente == null) {
@@ -88,9 +89,9 @@ public class UsuarioControllerV2 {
         return ResponseEntity.ok(assembler.toModel(usuarioExistente));
     }
 
-    // DELETE: Eliminar
+    // DELETE: Eliminar usuario
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarUsuario(@PathVariable Integer id) {
+    public ResponseEntity<?> eliminarUsuario(@PathVariable("id") Integer id) {
         Usuario usuario = usuarioService.buscarUsuarioPorId(id);
 
         if (usuario == null) {
@@ -102,4 +103,3 @@ public class UsuarioControllerV2 {
         return ResponseEntity.noContent().build();
     }
 }
-
