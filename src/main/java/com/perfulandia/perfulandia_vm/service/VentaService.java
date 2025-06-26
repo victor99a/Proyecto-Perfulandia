@@ -55,4 +55,8 @@ public class VentaService {
         return "Estado de la venta actualizado con éxito";
     }
 
+    public Venta crearVentaEntidad(Venta venta) {
+        return ventaRepository.save(venta);
+    }
+
 }
