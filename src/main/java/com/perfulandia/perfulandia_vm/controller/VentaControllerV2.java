@@ -55,8 +55,7 @@ public class VentaControllerV2 {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<Venta>> actualizarEstado(@PathVariable("id") Long id,
-                                                               @RequestBody String nuevoEstado) {
+    public ResponseEntity<EntityModel<Venta>> actualizarEstado(@PathVariable("id") Long id, @RequestBody String nuevoEstado) {
         ventaService.actualizarEstado(id, nuevoEstado);
         Venta actualizada = ventaService.obtenerVentaPorId(id);
         return ResponseEntity.ok(assembler.toModel(actualizada));
