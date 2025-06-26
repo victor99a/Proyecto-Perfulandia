@@ -42,41 +42,27 @@ public class VentaControllerV2 {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<Venta> obtenerVentaPorId(@PathVariable Long id) {
+    public EntityModel<Venta> obtenerVentaPorId(@PathVariable("id") Long id) {
         Venta venta = ventaService.obtenerVentaPorId(id);
         return assembler.toModel(venta);
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarVenta(@PathVariable Long id) {
+    public ResponseEntity<?> eliminarVenta(@PathVariable("id") Long id) {
         ventaService.eliminarVenta(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<Venta>> actualizarEstado(@PathVariable Long id,
+    public ResponseEntity<EntityModel<Venta>> actualizarEstado(@PathVariable("id") Long id,
                                                                @RequestBody String nuevoEstado) {
         ventaService.actualizarEstado(id, nuevoEstado);
         Venta actualizada = ventaService.obtenerVentaPorId(id);
         return ResponseEntity.ok(assembler.toModel(actualizada));
     }
-//@GetMapping("/{id}")
-//public EntityModel<Venta> obtenerVentaPorId(@PathVariable("id") Long id) {
-//    Venta venta = ventaService.obtenerVentaPorId(id);
-//    return assembler.toModel(venta);
-//}
 
-   //@DeleteMapping("/{id}")
-    //public ResponseEntity<?> eliminarVenta(@PathVariable("id") Long id) {
-    //    ventaService.eliminarVenta(id);
-    //    return ResponseEntity.noContent().build();
-    //}
-    //@PutMapping("/{id}")
-    //public ResponseEntity<EntityModel<Venta>> actualizarEstado(@PathVariable("id") Long id,
-    //                                                           @RequestBody String nuevoEstado) {
-    //    ventaService.actualizarEstado(id, nuevoEstado);
-    //    Venta actualizada = ventaService.obtenerVentaPorId(id);
-    //    return ResponseEntity.ok(assembler.toModel(actualizada));
-    //}
 }
+
+
 
